@@ -1,6 +1,64 @@
 import { ReturnBook } from "./ReturnBook";
+import { useEffect,useState } from "react";
+import Book from "../../Models/Book";
+import { SpinnerLoading } from "../../Utils/SpinnerLoading";
 
 export const Carousel = () => {
+     
+    const [books,setBooks]=useState<Book[]>([]);
+    const[isLoading,setIsLoading]=useState(true);
+    const[httpError,sethttpError]=useState(null);
+
+    useEffect(()=>{
+       const fetchBooks = async ()=>{
+           const baseUrl: string ="http://localhost:8085/api/books/all";
+
+           const url:string =`${baseUrl}?page=0?size=9`;
+
+           const response = await fetch(url);
+
+           if(!response.ok){
+                throw new Error('qlq erreur de fetch ');
+           }
+           const responseJson =await response.json();
+           const responseData =await responseJson;
+           const laodedBooks: Book[] =[];
+         
+           for (const x in responseData){
+             laodedBooks.push({
+                title: responseData[x].title,
+                id: responseData[x].id,
+                author: responseData[x].author,
+                description: responseData[x].description,
+                copies: responseData[x].copies,
+                copiesAvaible: responseData[x].copiesAvaible,
+                category: responseData[x].category,
+                img: responseData[x].img
+             });
+           }
+           setBooks(laodedBooks);
+           setIsLoading(false);
+       };
+       fetchBooks().catch((error : any)=>{
+        setIsLoading(false);
+        sethttpError(error.message);
+       })
+    }, []);
+
+    if(isLoading){
+        return (
+          <SpinnerLoading />
+        );
+    } 
+    if(httpError){
+        return (
+            <div  className='container m-5'>
+                <p>{httpError}</p>
+                <p>base de donne n'est pas activer par exemple </p>
+            </div>
+        );
+    }
+
     return (
 
         <div className='container mt-5' style={{ height: 550 }}>
@@ -14,16 +72,20 @@ export const Carousel = () => {
                 <div className='carousel-inner'>
                     <div className='carousel-item active'>
                         <div className='row d-flex justify-content-center align-items-center'>
-                            <ReturnBook/>
-                            <ReturnBook />
-                            <ReturnBook />
+                           {
+                            books.slice(0,3).map(book=>(
+                                <ReturnBook book={book} key={book.id}/>
+                            ))
+                           }
                         </div>
                     </div>
                     <div className='carousel-item '>
                         <div className='row d-flex justify-content-center align-items-center'>
-                            <ReturnBook />
-                            <ReturnBook />
-                            <ReturnBook />
+                        {
+                            books.slice(3,6).map(book=>(
+                                <ReturnBook book={book} key={book.id}/>
+                            ))
+                           }
                         </div>
                     </div> 
                 </div>
@@ -42,7 +104,7 @@ export const Carousel = () => {
             {/* MOBILE */}
             <div className='d-lg-none mt-3'>
                 <div className='row d-flex justify-content-center align-items-center'>
-                      <ReturnBook />
+                      <ReturnBook book={books[7]} key={books[7].id}/>
                       
                 </div>
             </div>
