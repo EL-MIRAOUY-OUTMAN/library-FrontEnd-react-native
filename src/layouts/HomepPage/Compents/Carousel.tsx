@@ -2,6 +2,7 @@ import { ReturnBook } from "./ReturnBook";
 import { useEffect,useState } from "react";
 import Book from "../../Models/Book";
 import { SpinnerLoading } from "../../Utils/SpinnerLoading";
+import { Link } from "react-router-dom";
 
 export const Carousel = () => {
      
@@ -11,9 +12,9 @@ export const Carousel = () => {
 
     useEffect(()=>{
        const fetchBooks = async ()=>{
-           const baseUrl: string ="http://localhost:8085/api/books/all";
+           const baseUrl: string ="http://localhost:8085/api/books";
 
-           const url:string =`${baseUrl}?page=0?size=9`;
+           const url:string =`${baseUrl}?page=0&size=5`;
 
            const response = await fetch(url);
 
@@ -109,7 +110,7 @@ export const Carousel = () => {
                 </div>
             </div>
             <div className='homepage-carousel-title mt-3'>
-                <a className='btn btn-outline-secondary btn-lg' href='#'>View More</a>
+                <Link className='btn btn-outline-secondary btn-lg' to='/search'>View More</Link>
             </div>
         </div>
 
