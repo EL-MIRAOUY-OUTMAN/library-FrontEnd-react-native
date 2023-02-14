@@ -6,6 +6,7 @@ import { NavBar } from './layouts/HomepPage/NavBarAndFooter/NavBar';
 import { HomePage } from './layouts/HomepPage/HomePage';
 import { SearchBooksPage } from './layouts/SearchBooksPage/SearchBookPage';
 import { Redirect, Route, Switch } from 'react-router-dom';
+import { BookCheckoutPage } from './layouts/BookCheckOutPage/BoockcCheckOutPage';
 
 export const  App = () => {
   return (
@@ -13,6 +14,9 @@ export const  App = () => {
     <NavBar/>
     <div className='flex-grow-1'>
     <Switch>
+    <Route path='/checkout'>
+      <BookCheckoutPage />
+    </Route>
     <Route path='/' exact>
       <Redirect to='/home'/>
        <HomePage/>
