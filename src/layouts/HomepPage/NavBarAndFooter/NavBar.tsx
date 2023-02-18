@@ -15,7 +15,7 @@ export const NavBar =()=>{
          <span className='navbar-toggler-icon'>
          
          </span>
-
+ 
          </button>
          <div className='collapse navbar-collapse' id='navbarNavDropdown'>
           <ul className='navbar-nav'>

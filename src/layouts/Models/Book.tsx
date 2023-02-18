@@ -3,16 +3,16 @@ class Book {
         title : String;
         author?: string ;
         description?: string ;
-        copies?: string ;
-        copiesAvaible?: string ;
+        copies?: number ;
+        copiesAvaible?: number ;
         category?: string ;
         img?: string ;
         constructor (id : number,
             title : String,
             author: string ,
             description: string ,
-            copies: string ,
-            copiesAvaible : string ,
+            copies: number ,
+            copiesAvaible : number ,
             autcategoryhor: string ,
             img: string )
             {

@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import Book from "../Models/Book";
+import Review from "../Models/Review";
 import { SpinnerLoading } from "../Utils/SpinnerLoading";
 import { StarReview } from "../Utils/StarReview";
+import { CheckOutAndReviewBox } from "./CheckOutAndReviewBook";
+import { LatestReviews } from "./LatestReviews";
 
 export const BookCheckoutPage = () => {
 
@@ -12,10 +15,10 @@ export const BookCheckoutPage = () => {
     const [httpError, setHttpError] = useState(null);
 
     // Review State
-    /*co nst [reviews, setReviews] = useState<ReviewModel[]>([])
+    const [reviews, setReviews] = useState<Review[]>([])
     const [totalStars, setTotalStars] = useState(0);
     const [isLoadingReview, setIsLoadingReview] = useState(true);
-
+/*
     const [isReviewLeft, setIsReviewLeft] = useState(false);
     const [isLoadingUserReview, setIsLoadingUserReview] = useState(true);
 
@@ -31,16 +34,14 @@ export const BookCheckoutPage = () => {
     console.log(bookId);
     useEffect(() => {
         const fetchBook = async () => {
-            const baseUrl: string = `http://localhost:8085/api/books/${2}`;
+            const baseUrl: string = `http://localhost:8085/api/books/${bookId}`;
 
             const response = await fetch(baseUrl);
-
             if (!response.ok) {
-                throw new Error('Something went wrong!');
+                throw new Error('erreur dans fetch reviews book par id ');
             }
 
             const responseJson = await response.json();
-
             const loadedBook: Book = {
                 id: responseJson.id,
                 title: responseJson.title,
@@ -51,61 +52,50 @@ export const BookCheckoutPage = () => {
                 category: responseJson.category,
                 img: responseJson.img,
             };
-
             setBook(loadedBook);
             setIsLoading(false);
+            console.log(responseJson)
         };
         fetchBook().catch((error: any) => {
             setIsLoading(false);
             setHttpError(error.message);
         })
     }, []);
-    /* 
         useEffect(() => {
             const fetchBookReviews = async () => {
-                const reviewUrl: string = `http://localhost:8080/api/reviews/search/findByBookId?bookId=${bookId}`;
-    
+                const reviewUrl: string = `http://localhost:8085/api/reviews/search/findByBookId?bookId=${bookId}`;
                 const responseReviews = await fetch(reviewUrl);
-    
                 if (!responseReviews.ok) {
                     throw new Error('Something went wrong!');
                 }
-    
                 const responseJsonReviews = await responseReviews.json();
-    
                 const responseData = responseJsonReviews._embedded.reviews;
-    
-                const loadedReviews: ReviewModel[] = [];
-    
+                const loadedReviews: Review[] = [];
                 let weightedStarReviews: number = 0;
-    
                 for (const key in responseData) {
                     loadedReviews.push({
                         id: responseData[key].id,
                         userEmail: responseData[key].userEmail,
                         date: responseData[key].date,
                         rating: responseData[key].rating,
-                        book_id: responseData[key].bookId,
-                        reviewDescription: responseData[key].reviewDescription,
+                        bookid: responseData[key].bookId,
+                        description: responseData[key].reviewDescription,
                     });
                     weightedStarReviews = weightedStarReviews + responseData[key].rating;
                 }
-    
                 if (loadedReviews) {
                     const round = (Math.round((weightedStarReviews / loadedReviews.length) * 2) / 2).toFixed(1);
                     setTotalStars(Number(round));
                 }
-    
                 setReviews(loadedReviews);
                 setIsLoadingReview(false);
             };
-    
             fetchBookReviews().catch((error: any) => {
                 setIsLoadingReview(false);
                 setHttpError(error.message);
             })
-        }, [isReviewLeft]);
-           
+        }, []);
+           /*
         useEffect(() => {
             const fetchUserReviewBook = async () => {
                 if (authState && authState.isAuthenticated) {
@@ -239,7 +229,7 @@ export const BookCheckoutPage = () => {
             setIsReviewLeft(true);
         }
         */
-    if (isLoading) {
+    if (isLoading || isLoadingReview) {
         return (
             <SpinnerLoading />
         )
@@ -271,13 +261,16 @@ export const BookCheckoutPage = () => {
                             <h2>{book?.title}</h2>
                             <h5 className='text-primary'>{book?.author}</h5>
                             <p className='lead'>{book?.description}</p>
-                            <StarReview rating={2.5} size={32}/>
+                            <StarReview rating={totalStars} size={32}/>
                         </div>
                     </div>
-                    <p>hello</p>  </div>
+                    <CheckOutAndReviewBox book={book} mobile={false} />
+                    <div>
+                     </div>
+                      </div>
                 <hr />
-                <p>hello</p>
-            </div>
+                      <LatestReviews reviews={reviews} bookId={book?.id} mobile={false}/>
+                    </div>
             <div className='container d-lg-none mt-5'>
                 <div className='d-flex justify-content-center alighn-items-center'>
                     {book?.img ?
@@ -292,10 +285,12 @@ export const BookCheckoutPage = () => {
                         <h2>{book?.title}</h2>
                         <h5 className='text-primary'>{book?.author}</h5>
                         <p className='lead'>{book?.description}</p>
-                        <p>hello</p>
+                       <StarReview  rating={totalStars} size={32} />
                     </div>
                 </div>
-                <p>hello</p> <hr />
+                   <CheckOutAndReviewBox book={book} mobile={true} />
+                 <hr />
+                 <LatestReviews reviews={reviews} bookId={book?.id} mobile={true} />
             </div>
         </div>
     );
